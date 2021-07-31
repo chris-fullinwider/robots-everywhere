@@ -5,6 +5,7 @@ export const store = configureStore({
   reducer: {
     counter: counterReducer,
   },
+  // TODO: SAGA MIDDLEWARE HERE
 });
 
 export type AppDispatch = typeof store.dispatch;

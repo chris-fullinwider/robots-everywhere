@@ -1,0 +1,261 @@
+base requester that adds auth token
+
+login request needs to add auth token
+    - not the best storage options for the token at the moment, but might be able to use parameter store in aws
+
+folder structure
+/public
+    - store all assets
+/src
+    /components
+        - all ui components
+    /interfaces
+        - organize interfaces into files that represent business ideas
+    /tests (MAYBE)
+    /redux
+        /actions
+            - request
+            - request pending
+            - request success
+            - request failure
+        /reducers
+            - receive incoming data
+            - use functions from ../transformations to transform data
+            - set data in redux store
+        /saga
+            - catch request actions
+            - make http request
+            - send response action with data
+    /transformations
+        - will be used by async request reducers to map incoming data into useful objects
+        - those objects will then be put into redux
+    
+
+UI structure:
+
+<MainLayout />
+    if !loggedIn && <LandingModal />
+        if isloginForm (default = true) <LoginForm />
+
+            container
+                logo
+                form
+                    email input
+                    password input
+
+                    ^^ all onChange -> update form state
+
+                login button -- click --> submit for form POST /auth/session
+                    - pending
+                    - success
+                    - error
+                register button -- click --> set isLoginForm = false - clear all input state
+        
+        else <RegistrationForm />
+
+            container
+                logo
+                form
+                    full name input
+                    email input
+                    password input
+
+                    ^^ all onChange -> update form state
+
+                register button -- click --> submit form POST /auth/register
+                    - pending
+                    - success
+                    - error
+                back to login button -- click --> set isLoginForm = true - clear all input state
+        
+    if loggedIn && <PageLayout />
+        
+        <Header>
+            <LeftGroup />
+                <Logo />
+                <RobotsLink />
+                <ResultsLink />
+
+            <RightGroup />
+                <UserName />
+                <LogOut />		
+                <MobileNav />
+                    <HamburgerTrigger />
+                    <LinkList />
+
+            PAGE: /robots
+            <Container />
+                <H1> isAdmin ? Admin : Robots
+                <RobotTileContainer />
+                    state: {
+                        deleteRobotId: string, // <-- id for robot being deleted
+                    }
+                    reduxState: {
+                        getAllRobots,
+                        deleteRobot,
+                        createRobot,
+                    }
+                    setDeleteRobot(bool) // <-- from useState
+
+                    isAdmin && reduxState.getAllRobots.data.map((robot) => <AddRobotTile />)
+                        
+                    ...<RobotTile isResults=false />...
+                        state: {
+                            delete: bool
+                            id: string,
+                            name: string,
+                            url: string,
+                        }
+                        setDelete(bool) // <-- from useState
+                        <H3>
+                        <Img>
+
+                        !isResults && <RobotButtons />
+                            isAdmin && <edit button /> onClick --> change tileState to 'edit'
+                            isAdmin && <delete button />
+                            isRestrictedUser && <vote button />
+                                hasVoted && disabled
+
+
+            PAGE: /results
+            <Container />
+                <h1 /> Results
+                <Container>
+                    ...<RobotTile isResults=true />
+                        <H3>
+                        <Img>
+                        <VotingResults />
+
+
+Redux structure:
+{
+    auth: {
+        id: string,
+        name: string,
+        email: string,
+        token: string,
+        isAdmin: bool,
+        isRestrictedUser: bool,
+        status: 'idle' | 'pending' | 'success' | 'failure'
+    },
+    getAllRobots: {
+        data: [
+            ...
+            {
+                id: string,
+                name: string,
+                url: string
+            },
+            ...
+        ],
+        status: 'idle' | 'pending' | 'success' | 'failure
+    },
+    deleteRobot: {
+        id: string, // <-- should only be populated on successful delete
+        status: 'idle' | 'pending' | 'success' | 'failure
+    },
+    createRobot: {
+        data: { // <-- should only be populated on successful create
+            id: string,
+            name: string,
+            url: string
+        },
+        status: 'idle' | 'pending' | 'success' | 'failure
+    },
+    getUserVote: { // <-- requires transformation on GET /votes result
+        data: {
+            id: string,
+            robot: string,
+            user: string
+        },
+        status: 'idle' | 'pending' | 'success' | 'failure'
+    },
+    getAllVotesByRobot: { // <-- requires transformation on GET /votes result
+        data: [
+            [RobotName]: number,
+        ],
+        status: 'idle' | 'pending' | 'success' | 'failure'
+    }
+}
+
+initally hard-code tokens and stuff
+    - if i get deployed to aws, figure out how to get creds to and from parameter store
+
+what services do i need?
+    - login / auth
+        - register users (POST https://mondo-robot-art-api.herokuapp.com/auth/register)
+            - pending:
+                - update redux state
+                - show loading icon
+            - success:
+                - let the user know
+                - update redux state
+                - auto-login (POST https://mondo-robot-art-api.herokuapp.com/auth/session)
+                - navigate from /login to /robots
+            - failure:
+                - update redux state
+                - let user know
+        - login (POST https://mondo-robot-art-api.herokuapp.com/auth/session)
+            - pending:
+                - update redux state
+                - show loading icon
+            - success:
+                - let the user know
+                - determine if admin
+                - update redux state
+                - navigate user from /login to /robots
+            - failure:
+                - update redux state
+                - let user know
+        - robots
+            - read
+                - GET robots (https://mondo-robot-art-api.herokuapp.com/robots)
+                    - pending:
+                        - update redux state
+                        - show loading icon
+                    - success:
+                        - update redux state
+                        - display robots
+                    - failure
+                        - update redux state
+                        - show error page
+            - create
+                - POST robot (https://mondo-robot-art-api.herokuapp.com/robots)
+                    - pending:
+                        - update redux state
+                        - show loading icon
+                    - success:
+                        - update redux state
+                        - display robots
+                    - failure
+                        - update redux state
+                        - show error tile in whichever tile initiated the create
+            - delete
+                - DELETE robot (https://mondo-robot-art-api.herokuapp.com/robots)
+                    - pending:
+                        - update redux state
+                        - show loading icon
+                    - success:
+                        - update redux state
+                        - display robots
+                    - failure
+                        - update redux state
+                        - show error tile in whichever tile initiated the create
+        - votes
+            - getUserVote
+                - GET votes (https://mondo-robot-art-api.herokuapp.com/votes/)
+                    - map through and find any existing votes that container userId == currentUserId
+                        - return only this item to the store
+                    - pending:
+                        - update redux state
+                    - success:
+                        - update redux state
+                        - display robots
+                    - failure
+                        - update redux state
+
+polish:
+    - add nice transitions after all functionality in place
+
+
+
