@@ -130,12 +130,14 @@ UI structure:
 Redux structure:
 {
     auth: {
-        id: string,
-        name: string,
-        email: string,
-        token: string,
-        isAdmin: bool,
-        isRestrictedUser: bool,
+        data: {
+            id: string,
+            name: string,
+            email: string,
+            token: string,
+            isAdmin: bool,
+            isRestrictedUser: bool,
+        },
         status: 'idle' | 'pending' | 'success' | 'failure'
     },
     getAllRobots: {
@@ -256,6 +258,59 @@ what services do i need?
 
 polish:
     - add nice transitions after all functionality in place
+
+implementation plan:
+    - login page
+        - get rough UI done for login and registration forms
+            - including breakpoints
+        - add in view logic
+            - isLoginForm
+            - 
+        - add in local functionality
+            - LOGIN FORM -- onclick register button -> update isLoginForm = false
+            - REGISTER FORM -- onclick back to login button -> update isLoginForm = true
+        - add in async functionality
+            - on login
+                - call create session (POST -- /auth/session)
+                    - pending: update redux.auth.status = 'pending'
+                    - success:
+                        - set token to (localStorage OR cookie) AND to redux.state.auth.token
+                        - call get session (GET -- /auth/session)
+                            - pending: 
+                                - update redux.state.auth.satus = 'pending'
+                            - success:
+                                - update redux.state.auth.data with result (id, name, email)
+                                - update redux.state.auth.satus = 'success'
+                            - failure:
+                                - update redux.state.auth.satus = 'failure'
+                    - failure:
+                        - update redux.state.auth.satus = 'failure'
+
+            - on register
+                - call register (POST -- /auth/register)
+                    - pending: update redux.auth.status = 'pending'
+                    - success:
+                        (THIS IS THE LOGIN FLOW ABOVE -- consolidate into single method that can be used in both places)
+                        - call create session (POST -- /auth/session)
+                            - pending: update redux.auth.status = 'pending'
+                            - success:
+                                - set token to (localStorage OR cookie) AND to redux.state.auth.token
+                                - call get session (GET -- /auth/session)
+                                    - pending: 
+                                        - update redux.state.auth.satus = 'pending'
+                                    - success:
+                                        - update redux.state.auth.data with result (id, name, email)
+                                        - update redux.state.auth.satus = 'success'
+                                    - failure:
+                                        - update redux.state.auth.satus = 'failure'
+                            - failure:
+                                - update redux.state.auth.satus = 'failure'
+                    - failure: 
+                        - update redux.state.auth.satus = 'failure'
+
+
+                
+        - polish styles / UI
 
 
 
