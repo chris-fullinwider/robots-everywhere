@@ -258,10 +258,11 @@ polish:
 
 implementation plan:
   - login page
-    - get rough UI done for login and registration forms
+    - (DONE) get rough UI done for login and registration forms
       - including breakpoints
-    - add in view logic
+    - (DONE) add in view logic
       - isLoginForm
+    - add in form state management with useState
             - 
     - add in local functionality
       - LOGIN FORM -- onclick register button -> update isLoginForm = false
@@ -309,3 +310,4 @@ implementation plan:
 
 
 
+override MUI colors to match designs
