@@ -1,28 +1,22 @@
+import { authInitialState, IAuthStateData } from './authSlice';
+
 export interface ILoginBody {
   email: string,
   password: string
 }
 
 export interface IUserInfo {
-  email: string,
-  id: string,
-  name: string, 
+  email: string | null,
+  id: string | null,
+  name: string | null,
 }
 
 export interface ILoginResponse {
   status: number,
-  data: {
-    id: string,
-    name: string,
-    email: string,
-    isAdmin: boolean,
-    token: string
-  }
+  data: IAuthStateData
 }
 
-// A mock function to mimic making an async request for data
 export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
-  // ASYNC CALL HERE
   try {
     const createSessionResponse = await fetch("https://mondo-robot-art-api.herokuapp.com/auth/session", {
       body: `{ "email": "${loginBody.email}", "password": "${loginBody.password}"}`,
@@ -34,6 +28,14 @@ export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
       mode: 'cors',
       method: "POST",
     })
+
+    if (createSessionResponse.status != 200) {
+      // don't bother with the rest if initial request doesn't work
+      return {
+        data: authInitialState.data,
+        status: createSessionResponse.status
+      }
+    }
 
     const json = await createSessionResponse.json()
     const { token } = json;
@@ -48,7 +50,18 @@ export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
       method: "GET",
     })
 
-    const userInfo: IUserInfo = await getSessionResponse.json()
+    let userInfo: IUserInfo;
+    // it's not the biggest deal in the world if this call fails
+    // more like nice to have info
+    if (getSessionResponse.status === 200) {
+      userInfo = await getSessionResponse.json()
+    } else {
+      userInfo = {
+        email: null,
+        id: null,
+        name: null,
+      }
+    }
     const { email, id, name } = userInfo
 
     return {
@@ -62,7 +75,12 @@ export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
       status: createSessionResponse.status,
     }
   } catch (error: any) {
+    // eslint-disable-next-line
+    console.log('ERROR: ', error)
     throw new Error(error)
   }
 }
 
+// export async function register(registrationBody: IRegistrationBody): Promise<ILoginResponse> {
+
+// }
