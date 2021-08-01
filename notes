@@ -319,8 +319,10 @@ implementation plan:
     - /robots
     - /results
 
-  - header
-    - implement breakpoints
+  - (DONE) implement logout
+
+  - (DONE) header
+    - (DONE) implement breakpoints
 
   Robots:
     - create robot redux / api implementation

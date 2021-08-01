@@ -1,21 +1,20 @@
-import { Box, Button, IconButton, Menu, MenuItem } from '@material-ui/core';
+import { Box, IconButton, Menu, MenuItem } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import MenuIcon from '@material-ui/icons/Menu';
-import React, { MouseEvent, MouseEventHandler, useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { RESULTS_PATH, ROBOTS_PATH } from '../App';
 import logo from '../brand_logo.svg';
-import LogoutButton from './LogoutButton';
+import LogoutButton, { BUTTON, LINK } from './LogoutButton';
+
+import './Header.scss'
 
 const NAV_LINK = 'nav-link'
+const HEADER_GROUP = 'header-group'
 const ON = 'on'
 const OFF = 'off'
 
 type IHeaderProps = RouteComponentProps
-
-const toggleMenu = (evt: MouseEvent) => {
-  evt.preventDefault();
-}
 
 const Header: React.FunctionComponent<IHeaderProps> = (props: IHeaderProps) => {
   const [anchorEl, setAnchorEl] = useState<Element>()
@@ -31,27 +30,28 @@ const Header: React.FunctionComponent<IHeaderProps> = (props: IHeaderProps) => {
   console.log(anchorEl)
 
   return (
-    <header>
-      <Box className="header-group__left">
+    <header className="header">
+      <Box className={`${HEADER_GROUP} ${HEADER_GROUP}__left`}>
         <img src={logo} alt="logo" />
         <Link
-          className={`${NAV_LINK}__robots ${robotsOn ? ON : OFF}`}
+          className={`${NAV_LINK} ${NAV_LINK}__robots ${robotsOn ? ON : OFF}`}
           to={ROBOTS_PATH}
         >
           Robots
         </Link>
         <Link
-          className={`${NAV_LINK}__results ${resultsOn ? ON : OFF}`}
+          className={`${NAV_LINK} ${NAV_LINK}__results ${resultsOn ? ON : OFF}`}
           to={RESULTS_PATH}
         >
           Results
         </Link>
       </Box>
-      <Box className="header-group__right">
-        <LogoutButton />
+      <Box className={`${HEADER_GROUP} ${HEADER_GROUP}__right`}>
+        <LogoutButton type={BUTTON} />
         <IconButton
           aria-controls="simple-menu"
           aria-haspopup="true"
+          id="menu-trigger"
           onClick={anchorEl === undefined ? handleOpen : handleClose}
         >
           {anchorEl == undefined &&
@@ -60,27 +60,34 @@ const Header: React.FunctionComponent<IHeaderProps> = (props: IHeaderProps) => {
           {anchorEl !== undefined &&
             <CloseIcon />
           }
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose}>
-              <Link to={ROBOTS_PATH}>Robots</Link>
-
-              <Link to={ROBOTS_PATH}>Robots</Link>
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <Link to={RESULTS_PATH}>Results</Link>
-            </MenuItem>
-            <MenuItem onClick={handleClose}>
-              <LogoutButton />
-            </MenuItem>
-          </Menu>
         </IconButton>
-
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleClose}>
+            <Link
+              className={`${NAV_LINK} ${NAV_LINK}__robots ${robotsOn ? ON : OFF}`}
+              to={ROBOTS_PATH}
+            >
+              Robots
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <Link
+              className={`${NAV_LINK} ${NAV_LINK}__results ${resultsOn ? ON : OFF}`}
+              to={RESULTS_PATH}
+            >
+              Results
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <LogoutButton type={LINK} />
+          </MenuItem>
+        </Menu>
       </Box>
     </header>
   );
