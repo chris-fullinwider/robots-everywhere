@@ -268,13 +268,13 @@ implementation plan:
       - LOGIN FORM -- onclick register button -> update isLoginForm = false
       - REGISTER FORM -- onclick back to login button -> update isLoginForm = true
     - add in async functionality
-      - create auth service
-        - method to make http request
-        - register method
-        - login method
+      - (DONE) create auth service
+        - (DONE) method to make http request
+        - (DONE) register method
+        - (DONE) login method
           - this will combine the identical flows below
         - set up redux
-      - on login
+      - (DONE) on login
         - CALL create session (POST -- /auth/session)
           - pending: update redux.auth.status = 'pending'
           - success:
@@ -290,7 +290,7 @@ implementation plan:
           - failure:
             - update redux.state.auth.satus = 'failure'
 
-      - on register
+      - (DONE) on register
         - CALL register (POST -- /auth/register)
           - pending: update redux.auth.status = 'pending'
             - success:
@@ -312,6 +312,9 @@ implementation plan:
             - failure: 
               - update redux.state.auth.satus = 'failure'
 
+  - do validation for outgoing requests
+    - joi probably
+    - can't believe they allowed me to pass every value as empty string to /auth/register ;)
   - polish styles / UI for login / registration
     - add breakpoint (probably only for xs)
 

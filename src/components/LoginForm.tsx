@@ -14,15 +14,24 @@ import {
   SERVER_ERROR,
   LOGIN_FAILURE,
   LOGIN_SUCCESS,
+  REGISTER_SUCCESS,
 } from '../features/auth/authSlice';
 
 import './LoginForm.scss'
 
-interface ILoginFormProps {
+interface ILoginProps {
   setIsLoginForm: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const RegistrationForm: React.FunctionComponent<ILoginFormProps> = (props: ILoginFormProps) => {
+const shouldShowLoginForm = (authStatus: string | null) => {
+  return (
+    authStatus === IDLE
+    || authStatus === PENDING
+    || authStatus === REGISTER_SUCCESS
+  )
+}
+
+const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
   const { setIsLoginForm } = props
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -31,7 +40,7 @@ const RegistrationForm: React.FunctionComponent<ILoginFormProps> = (props: ILogi
   const authStatus = useAppSelector(selectAuthStatus)
   return (
     <>
-      {(authStatus === IDLE || authStatus === PENDING) &&
+      {(shouldShowLoginForm(authStatus)) &&
         <form className="login-form">
           <img src={logo} alt="this is the brand, baby" />
           <Box display="flex" flexDirection="column">
@@ -57,9 +66,9 @@ const RegistrationForm: React.FunctionComponent<ILoginFormProps> = (props: ILogi
               className="form-button"
               variant="contained"
               color="primary"
-              disabled={authStatus === 'pending'}
+              disabled={authStatus === PENDING}
               onClick={() => {
-                dispatch(loginAsync({ email, password}))
+                dispatch(loginAsync({ email, password }))
               }}
             >
               Log in
@@ -105,4 +114,4 @@ const RegistrationForm: React.FunctionComponent<ILoginFormProps> = (props: ILogi
   );
 }
 
-export default RegistrationForm;
+export default Login;

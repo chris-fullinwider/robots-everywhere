@@ -1,8 +1,19 @@
 import { authInitialState, IAuthStateData } from './authSlice';
 
+export interface IRegistrationBody {
+  email: string,
+  password: string,
+  name: string,
+}
+
+interface IRegistrationResponse {
+  status: number
+  statusText?: string
+}
+
 export interface ILoginBody {
   email: string,
-  password: string
+  password: string,
 }
 
 export interface IUserInfo {
@@ -13,7 +24,7 @@ export interface IUserInfo {
 
 export interface ILoginResponse {
   status: number,
-  data: IAuthStateData
+  data: IAuthStateData,
 }
 
 export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
@@ -57,9 +68,9 @@ export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
       userInfo = await getSessionResponse.json()
     } else {
       userInfo = {
-        email: null,
         id: null,
         name: null,
+        email: null,
       }
     }
     const { email, id, name } = userInfo
@@ -75,12 +86,30 @@ export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
       status: createSessionResponse.status,
     }
   } catch (error: any) {
-    // eslint-disable-next-line
-    console.log('ERROR: ', error)
+    console.error('ERROR: ', error)
     throw new Error(error)
   }
 }
 
-// export async function register(registrationBody: IRegistrationBody): Promise<ILoginResponse> {
+export async function register(registrationBody: IRegistrationBody): Promise<IRegistrationResponse> {
+  try {
+    const registrationResponse = await fetch("https://mondo-robot-art-api.herokuapp.com/auth/register", {
+      body: `{ "email": "${registrationBody.email}", "password": "${registrationBody.password}", "name": "${registrationBody.name}"}`,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "x-robot-art-api-key": "8db4e60b9ac3b234bf4b46fc22ec0908",
+      },
+      mode: 'cors',
+      method: "POST",
+    })
 
-// }
+    return {
+      status: registrationResponse.status,
+      statusText: registrationResponse.statusText,
+    }
+  } catch (error: any) {
+    console.error('ERROR: ', error)
+    throw new Error(error)
+  }
+}
