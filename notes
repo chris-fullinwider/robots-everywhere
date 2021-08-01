@@ -312,11 +312,23 @@ implementation plan:
             - failure: 
               - update redux.state.auth.satus = 'failure'
 
+
+  - implement routing
+    - /login
+    - /robots
+    - /results
+
+  Robots:
+    - 
+
+
+  polish
   - do validation for outgoing requests
     - joi probably
     - can't believe they allowed me to pass every value as empty string to /auth/register ;)
   - polish styles / UI for login / registration
     - add breakpoint (probably only for xs)
+    - add transitions for some ui events
 
 
 

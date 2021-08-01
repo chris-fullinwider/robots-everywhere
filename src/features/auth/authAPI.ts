@@ -1,4 +1,7 @@
-import { authInitialState, IAuthStateData } from './authSlice';
+export interface IGetSessionResponse {
+  status: number,
+  data: IUserInfo
+}
 
 export interface IRegistrationBody {
   email: string,
@@ -6,9 +9,8 @@ export interface IRegistrationBody {
   name: string,
 }
 
-interface IRegistrationResponse {
+export interface IRegistrationResponse {
   status: number
-  statusText?: string
 }
 
 export interface ILoginBody {
@@ -24,10 +26,51 @@ export interface IUserInfo {
 
 export interface ILoginResponse {
   status: number,
-  data: IAuthStateData,
+  token: string | null;
 }
 
-export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
+/**
+ * get the current user session by token
+ * @param token bearer token
+ * @returns IGetSessionResponse -- session information based on bearer token
+ */
+export const getSession = async (token: string): Promise<IGetSessionResponse> => {
+  let userInfo: IUserInfo = {
+    id: null,
+    name: null,
+    email: null,
+  }
+
+  try {
+    const getSessionResponse = await fetch("https://mondo-robot-art-api.herokuapp.com/auth/session", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      mode: 'cors',
+      method: "GET",
+    })
+    const { status } = getSessionResponse
+    if (getSessionResponse.status === 200) {
+      userInfo = await getSessionResponse.json()
+    }
+    return {
+      status,
+      data: userInfo,
+    }
+  } catch (error: any) {
+    console.log('ERROR: ', error)
+    throw new Error(error)
+  }
+}
+
+/**
+ * attempt to login with email and password credentials
+ * @param loginBody ILoginBody
+ * @returns ILoginResponse -- get bearer token to be used with subsequent requests
+ */
+export const login = async (loginBody: ILoginBody): Promise<ILoginResponse> => {
   try {
     const createSessionResponse = await fetch("https://mondo-robot-art-api.herokuapp.com/auth/session", {
       body: `{ "email": "${loginBody.email}", "password": "${loginBody.password}"}`,
@@ -40,50 +83,22 @@ export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
       method: "POST",
     })
 
-    if (createSessionResponse.status != 200) {
+    const { status: responseStatus } = createSessionResponse
+    if (responseStatus != 200) {
       // don't bother with the rest if initial request doesn't work
       return {
-        data: authInitialState.data,
+        token: null,
         status: createSessionResponse.status
       }
     }
 
     const json = await createSessionResponse.json()
     const { token } = json;
-
-    const getSessionResponse = await fetch("https://mondo-robot-art-api.herokuapp.com/auth/session", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      mode: 'cors',
-      method: "GET",
-    })
-
-    let userInfo: IUserInfo;
-    // it's not the biggest deal in the world if this call fails
-    // more like nice to have info
-    if (getSessionResponse.status === 200) {
-      userInfo = await getSessionResponse.json()
-    } else {
-      userInfo = {
-        id: null,
-        name: null,
-        email: null,
-      }
-    }
-    const { email, id, name } = userInfo
+    localStorage.setItem('token', token) // <-- using localstorage for token persistence
 
     return {
-      data: {
-        id,
-        name,
-        email,
-        token,
-        isAdmin: email === 'admin@mondorobot.com',
-      },
-      status: createSessionResponse.status,
+      token,
+      status: responseStatus,
     }
   } catch (error: any) {
     console.error('ERROR: ', error)
@@ -91,7 +106,12 @@ export async function login(loginBody: ILoginBody): Promise<ILoginResponse> {
   }
 }
 
-export async function register(registrationBody: IRegistrationBody): Promise<IRegistrationResponse> {
+/**
+ * attempt to register a new user
+ * @param registrationBody IRegistrationBody -- username, email, password
+ * @returns IRegistrationResponse -- only returning status of request
+ */
+export const register = async (registrationBody: IRegistrationBody): Promise<IRegistrationResponse> => {
   try {
     const registrationResponse = await fetch("https://mondo-robot-art-api.herokuapp.com/auth/register", {
       body: `{ "email": "${registrationBody.email}", "password": "${registrationBody.password}", "name": "${registrationBody.name}"}`,
@@ -106,7 +126,6 @@ export async function register(registrationBody: IRegistrationBody): Promise<IRe
 
     return {
       status: registrationResponse.status,
-      statusText: registrationResponse.statusText,
     }
   } catch (error: any) {
     console.error('ERROR: ', error)

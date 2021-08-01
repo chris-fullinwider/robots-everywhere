@@ -31,7 +31,7 @@ const shouldShowLoginForm = (authStatus: string | null) => {
   )
 }
 
-const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
+const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
   const { setIsLoginForm } = props
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -84,17 +84,15 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
           </Box>
         </form>
       }
-
-      {authStatus === LOGIN_SUCCESS &&
-        <h1>{'Remember, there\'s one rule about robot club!'}</h1> 
+      { authStatus === LOGIN_SUCCESS &&
+        <h1>{'Login Successful: initiating human transfer protocol'}</h1> 
       }
       { (authStatus === LOGIN_FAILURE ||authStatus === SERVER_ERROR) &&
         <Box className="login-error">
           <h1>Human</h1>
-          <p>I regret to inform you</p>
           <p>there has been a horrible mistake</p>
           <p>at this time, it is unclear exactly what has happened</p>
-          <p>though, I suspect you are to blame for this misunderstanding</p>
+          <p>though, I suspect you are to blame</p>
           <p>please click button</p>
           <p>try again</p>
           <Button
@@ -114,4 +112,4 @@ const Login: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
   );
 }
 
-export default Login;
+export default LoginForm;

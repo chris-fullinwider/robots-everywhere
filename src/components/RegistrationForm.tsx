@@ -47,6 +47,11 @@ const shouldShowErrorMessage = (authStatus: string) => {
   )
 }
 
+/**
+ * this component is responsible for registering a user
+ * @param props takes in a function to set view logic for login / registration form
+ * @returns the registration form component -- React.FunctionComponent<IRegistrationProps>
+ */
 const RegistrationForm: React.FunctionComponent<IRegistrationProps> = (props: IRegistrationProps) => {
   const { setIsLoginForm } = props
   const [name, setName] = useState('')

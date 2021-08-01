@@ -4,14 +4,14 @@ import React, { useState } from 'react';
 import { Box } from '@material-ui/core';
 import RegistrationForm from './RegistrationForm';
 import LoginForm from './LoginForm';
-import './LandingModal.scss';
+import './LoginModal.scss';
 
 
-const LandingModal: React.FunctionComponent = () => {
+const LoginModal: React.FunctionComponent = () => {
   const [ isLoginForm, setIsLoginForm ] = useState(true)
 
   return (
-    <Box display="flex" className="landing-modal">
+    <Box display="flex" className="login-modal">
       { isLoginForm &&
         <LoginForm setIsLoginForm={setIsLoginForm} />
       }
@@ -24,4 +24,4 @@ const LandingModal: React.FunctionComponent = () => {
   );
 }
 
-export default LandingModal;
+export default LoginModal;
