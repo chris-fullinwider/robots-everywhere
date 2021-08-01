@@ -3,31 +3,41 @@ import './App.css';
 import {
   Switch,
   Route,
-  Link,
   Redirect,
-  withRouter
+  withRouter,
+  RouteComponentProps
 } from "react-router-dom"
 import { store } from './app/store';
 import { Provider } from 'react-redux';
 import Login from './components/Login';
+import Header from './components/Header';
+import Robots from './components/Robots';
 
-interface IAppProps {
-  history: any
-}
-const App: React.FunctionComponent<any> = (props:IAppProps) => {
+type IAppProps = RouteComponentProps
+
+export const ROBOTS_PATH = '/robots'
+export const RESULTS_PATH = '/results'
+export const LOGIN_PATH = '/login'
+
+const App: React.FunctionComponent<IAppProps> = (props:IAppProps) => {
   const token = localStorage.getItem('token')
-  console.log('PROPS: ', JSON.stringify(props))
   return (
     <Provider store={store}>
+      {props.location.pathname !== LOGIN_PATH &&
+        <Header />
+      }
       <Switch>
         <Route exact path="/">
         {!!token === true
-          ? <Redirect exact to="/robots" />
-          : <Redirect exact to="/login" />
+          ? <Redirect exact to={ROBOTS_PATH} />
+          : <Redirect exact to={LOGIN_PATH} />
         }
         </Route>
-        <Route exact path="/login" component={Login} />
-        <Route path="/robots">
+        <Route exact path={LOGIN_PATH}>
+          <Login />
+        </Route>
+        <Route exact path={ROBOTS_PATH}>
+          <Robots />
         </Route>
         {/* <Route path="/results">
         </Route> */}

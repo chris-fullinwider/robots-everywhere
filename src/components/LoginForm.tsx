@@ -15,9 +15,12 @@ import {
   LOGIN_FAILURE,
   LOGIN_SUCCESS,
   REGISTER_SUCCESS,
+  LOGOUT_SUCCESS,
 } from '../features/auth/authSlice';
 
 import './LoginForm.scss'
+import { Redirect } from 'react-router-dom';
+import { ROBOTS_PATH } from '../App';
 
 interface ILoginProps {
   setIsLoginForm: React.Dispatch<React.SetStateAction<boolean>>
@@ -28,6 +31,7 @@ const shouldShowLoginForm = (authStatus: string | null) => {
     authStatus === IDLE
     || authStatus === PENDING
     || authStatus === REGISTER_SUCCESS
+    || authStatus === LOGOUT_SUCCESS
   )
 }
 
@@ -35,11 +39,23 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
   const { setIsLoginForm } = props
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [redirectToRobots, setRedirectToRobots] = useState(false)
+
   const dispatch = useAppDispatch();
 
   const authStatus = useAppSelector(selectAuthStatus)
+  if (authStatus === LOGIN_SUCCESS) {
+    // delayed redirect to robots when login success is detected
+    setTimeout(() => {
+      setRedirectToRobots(true)
+    }, 1000)
+  }
+
   return (
     <>
+      {redirectToRobots &&
+        <Redirect exact to={ROBOTS_PATH} />
+      }
       {(shouldShowLoginForm(authStatus)) &&
         <form className="login-form">
           <img src={logo} alt="this is the brand, baby" />
@@ -98,6 +114,7 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
           <Button
             className="reset-button"
             variant="outlined"
+            color="secondary"
             onClick={() => {
               setEmail('')
               setPassword('')

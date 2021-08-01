@@ -29,6 +29,10 @@ export interface ILoginResponse {
   token: string | null;
 }
 
+export interface ILogoutResponse {
+  status: number;
+}
+
 /**
  * get the current user session by token
  * @param token bearer token
@@ -94,7 +98,6 @@ export const login = async (loginBody: ILoginBody): Promise<ILoginResponse> => {
 
     const json = await createSessionResponse.json()
     const { token } = json;
-    localStorage.setItem('token', token) // <-- using localstorage for token persistence
 
     return {
       token,
@@ -129,6 +132,30 @@ export const register = async (registrationBody: IRegistrationBody): Promise<IRe
     }
   } catch (error: any) {
     console.error('ERROR: ', error)
+    throw new Error(error)
+  }
+}
+
+export const logout = async (token: string): Promise<ILogoutResponse> => {
+  try {
+    console.log('LOGOUT: ', token)
+    const logoutResponse = await fetch("https://mondo-robot-art-api.herokuapp.com/auth/session", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      mode: 'cors',
+      method: "Delete",
+    })
+
+    const { status } = logoutResponse
+
+    return {
+      status
+    }
+  } catch (error: any) {
+    console.log('Error', error)
     throw new Error(error)
   }
 }

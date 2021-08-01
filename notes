@@ -313,13 +313,34 @@ implementation plan:
               - update redux.state.auth.satus = 'failure'
 
 
-  - implement routing
+  - (DONE) implement routing
+    - / <-- always redirects
     - /login
     - /robots
     - /results
 
+  - header
+    - implement breakpoints
+
   Robots:
-    - 
+    - create robot redux / api implementation
+      - get robots
+      - delete robot
+      - create robot
+      - 
+    - create Robot home component
+      - should only get here if there is a valid token in localstorage
+      - always get session first
+        - if get session fails, redirect to login
+        - if get session succeeds, render Robots
+    - create RobotTileContainer
+    - create RobotTile
+      - two variations
+        - one for read
+        - one for create
+
+  Votes:
+    
 
 
   polish

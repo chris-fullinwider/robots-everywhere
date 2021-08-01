@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { ILoginBody, login, IRegistrationBody, register, getSession, ILoginResponse, IRegistrationResponse, IGetSessionResponse } from './authAPI';
+import { ILoginBody, login, IRegistrationBody, register, getSession, ILoginResponse, IRegistrationResponse, IGetSessionResponse, logout, ILogoutResponse } from './authAPI';
 
 export const PENDING = 'pending'
 export const IDLE = 'idle'
@@ -11,6 +11,8 @@ export const REGISTER_SUCCESS = 'register success'
 export const REGISTER_FAILURE = 'register failed'
 export const GET_SESSION_SUCCESS = 'get session success'
 export const GET_SESSION_FAILURE = 'get session failed'
+export const LOGOUT_SUCCESS = 'logout success'
+export const LOGOUT_FAILURE = 'logout failed'
 export const SOMETHING_BROKE = 'something broke'
 
 
@@ -26,7 +28,8 @@ export interface IAuthState {
   data: IAuthStateData,
   status: typeof IDLE | typeof PENDING | typeof LOGIN_SUCCESS| typeof LOGIN_FAILURE
     | typeof SERVER_ERROR | typeof REGISTER_SUCCESS | typeof REGISTER_FAILURE
-    | typeof GET_SESSION_SUCCESS | typeof GET_SESSION_FAILURE | typeof SOMETHING_BROKE;
+    | typeof GET_SESSION_SUCCESS | typeof GET_SESSION_FAILURE | typeof LOGOUT_SUCCESS
+    | typeof LOGOUT_FAILURE | typeof SOMETHING_BROKE;
 }
 
 export const authInitialState: IAuthState = {
@@ -80,7 +83,20 @@ export const getSessionAsync = createAsyncThunk(
   }
 )
 
+/**
+ * creates asyncThunk to used with createSlice to create logout actions / reducers
+ */
+export const logoutAsync = createAsyncThunk(
+  'auth/logout',
+  async (token: string) => {
+    const response: ILogoutResponse = await logout(token)
+    return response
+  }
+)
 
+/**
+ * create a slice for auth data services
+ */
 export const authSlice = createSlice({
   name: 'auth',
   initialState: authInitialState,
@@ -101,8 +117,11 @@ export const authSlice = createSlice({
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
         if (action.payload.status >= 200) {
+          const { token } = action.payload
+
           state.status = LOGIN_SUCCESS
-          state.data.token = action.payload.token
+          state.data.token = token
+          localStorage.setItem('token', token as string) // <-- using localstorage for token persistence
         }
         if (action.payload.status >= 400) {
           // TODO: ideally we have better reasons why the login failed
@@ -158,6 +177,36 @@ export const authSlice = createSlice({
           // can't remember if a 500 response will come through from the PROMISE.fulfilled or trigger the catch
           state.status = SERVER_ERROR
         }
+      })
+      .addCase(getSessionAsync.rejected, (state) => {
+        // would want to handle this a lot better, but that's detail work for later
+        state.status = SOMETHING_BROKE
+      })
+      // ----- logoutAsync
+      .addCase(logoutAsync.pending, (state) => {
+        state.status = PENDING
+      })
+      .addCase(logoutAsync.fulfilled, (state, action) => {
+        const { status } = action.payload
+
+        if (status === 200) {
+          localStorage.removeItem('token') // <-- remove token from localstorage on successful logout
+          state.status = LOGOUT_SUCCESS
+        }
+
+        if (action.payload.status >= 400 && action.payload.status < 500) {
+          // TODO: ideally we have better reasons why the login failed
+          // ie: bad email, or bad password
+          state.status = LOGOUT_FAILURE
+        }
+        if (action.payload.status >= 500) {
+          // can't remember if a 500 response will come through from the PROMISE.fulfilled or trigger the catch
+          state.status = SERVER_ERROR
+        }
+      })
+      .addCase(logoutAsync.rejected, (state) => {
+        // would want to handle this a lot better, but that's detail work for later
+        state.status = SOMETHING_BROKE
       })
   },
 });
