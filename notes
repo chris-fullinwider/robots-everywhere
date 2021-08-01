@@ -268,6 +268,12 @@ implementation plan:
       - LOGIN FORM -- onclick register button -> update isLoginForm = false
       - REGISTER FORM -- onclick back to login button -> update isLoginForm = true
     - add in async functionality
+      - create auth service
+        - method to make http request
+        - register method
+        - login method
+          - this will combine the identical flows below
+        - set up redux
       - on login
         - CALL create session (POST -- /auth/session)
           - pending: update redux.auth.status = 'pending'
@@ -284,27 +290,27 @@ implementation plan:
           - failure:
             - update redux.state.auth.satus = 'failure'
 
-    - on register
-      - CALL register (POST -- /auth/register)
-        - pending: update redux.auth.status = 'pending'
-          - success:
-            (THIS IS THE LOGIN FLOW ABOVE -- consolidate into single method that can be used in both places)
-            - CALL create session (POST -- /auth/session)
-              - pending: update redux.auth.status = 'pending'
-              - success:
-                - set token to (localStorage OR cookie) AND to redux.state.auth.token
-                - CALL get session (GET -- /auth/session)
-                  - pending: 
-                    - update redux.state.auth.satus = 'pending'
-                  - success:
-                    - update redux.state.auth.data with result (id, name, email)
-                    - update redux.state.auth.satus = 'success'
-                  - failure:
-                    - update redux.state.auth.satus = 'failure'
-              - failure:
-                - update redux.state.auth.satus = 'failure'
-          - failure: 
-            - update redux.state.auth.satus = 'failure'
+      - on register
+        - CALL register (POST -- /auth/register)
+          - pending: update redux.auth.status = 'pending'
+            - success:
+              (THIS IS THE LOGIN FLOW ABOVE -- consolidate into single method that can be used in both places)
+              - CALL create session (POST -- /auth/session)
+                - pending: update redux.auth.status = 'pending'
+                - success:
+                  - set token to (localStorage OR cookie) AND to redux.state.auth.token
+                  - CALL get session (GET -- /auth/session)
+                    - pending: 
+                      - update redux.state.auth.satus = 'pending'
+                    - success:
+                      - update redux.state.auth.data with result (id, name, email)
+                      - update redux.state.auth.satus = 'success'
+                    - failure:
+                      - update redux.state.auth.satus = 'failure'
+                - failure:
+                  - update redux.state.auth.satus = 'failure'
+            - failure: 
+              - update redux.state.auth.satus = 'failure'
 
   - polish styles / UI for login / registration
     - add breakpoint (probably only for xs)

@@ -9,7 +9,7 @@ import './MainLayout.scss';
 const MainLayout: React.FunctionComponent = () => {
   return (
     <Container className="main-layout">
-      <LandingModal isLoginForm />
+      <LandingModal />
       {/* TODO login and registration form will go here */}
     </Container>
   );

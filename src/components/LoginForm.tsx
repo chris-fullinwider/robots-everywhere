@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 
 import { Box, Button, TextField } from '@material-ui/core';
 import logo from '../brand_logo.svg';
+import { loginAsync } from '../features/auth/authSlice';
+import { useAppDispatch } from '../app/hooks';
 
 interface ILoginFormProps {
   setIsLoginForm: React.Dispatch<React.SetStateAction<boolean>>
@@ -12,6 +14,7 @@ const RegistrationForm: React.FunctionComponent<ILoginFormProps> = (props: ILogi
   const { setIsLoginForm } = props
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const dispatch = useAppDispatch();
   return (
     <form>
       <img src={logo} alt="this is the brand, baby" />
@@ -38,6 +41,9 @@ const RegistrationForm: React.FunctionComponent<ILoginFormProps> = (props: ILogi
           className="form-button"
           variant="contained"
           color="primary"
+          onClick={() => {
+            dispatch(loginAsync({ email, password}))
+          }}
         >
           Log in
         </Button>
