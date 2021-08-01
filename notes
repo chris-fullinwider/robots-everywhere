@@ -262,9 +262,9 @@ implementation plan:
       - including breakpoints
     - (DONE) add in view logic
       - isLoginForm
-    - add in form state management with useState
+    - (DONE) add in form state management with useState
             - 
-    - add in local functionality
+    - (DONE) add in local functionality
       - LOGIN FORM -- onclick register button -> update isLoginForm = false
       - REGISTER FORM -- onclick back to login button -> update isLoginForm = true
     - add in async functionality
@@ -307,6 +307,7 @@ implementation plan:
             - update redux.state.auth.satus = 'failure'
 
   - polish styles / UI for login / registration
+    - add breakpoint (probably only for xs)
 
 
 
