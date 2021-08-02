@@ -6,17 +6,11 @@ import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { Box, Button, TextField } from '@material-ui/core';
 import logo from '../brand_logo.svg';
 import {
-  resetAll,
+  resetAuth,
   loginAsync,
   selectAuthStatus,
-  IDLE,
-  PENDING,
-  SERVER_ERROR,
-  LOGIN_FAILURE,
-  LOGIN_SUCCESS,
-  REGISTER_SUCCESS,
-  LOGOUT_SUCCESS,
 } from '../features/auth/authSlice';
+import * as constants from '../features/constants';
 
 import './LoginForm.scss'
 import { Redirect } from 'react-router-dom';
@@ -28,13 +22,18 @@ interface ILoginProps {
 
 const shouldShowLoginForm = (authStatus: string | null) => {
   return (
-    authStatus === IDLE
-    || authStatus === PENDING
-    || authStatus === REGISTER_SUCCESS
-    || authStatus === LOGOUT_SUCCESS
+    authStatus === constants.IDLE
+    || authStatus === constants.PENDING
+    || authStatus === constants.REGISTER_SUCCESS
+    || authStatus === constants.LOGOUT_SUCCESS
   )
 }
 
+/**
+ * create a login form component that is capable of logging a user in
+ * @param props setIsLoginForm
+ * @returns LoginForm component
+ */
 const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => {
   const { setIsLoginForm } = props
   const [email, setEmail] = useState('')
@@ -44,7 +43,7 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
   const dispatch = useAppDispatch();
 
   const authStatus = useAppSelector(selectAuthStatus)
-  if (authStatus === LOGIN_SUCCESS) {
+  if (authStatus === constants.LOGIN_SUCCESS) {
     // delayed redirect to robots when login success is detected
     setTimeout(() => {
       setRedirectToRobots(true)
@@ -82,7 +81,7 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
               className="form-button"
               variant="contained"
               color="primary"
-              disabled={authStatus === PENDING}
+              disabled={authStatus === constants.PENDING}
               onClick={() => {
                 dispatch(loginAsync({ email, password }))
               }}
@@ -100,10 +99,10 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
           </Box>
         </form>
       }
-      { authStatus === LOGIN_SUCCESS &&
+      { authStatus === constants.LOGIN_SUCCESS &&
         <h1>{'Login Successful: initiating human transfer protocol'}</h1> 
       }
-      { (authStatus === LOGIN_FAILURE ||authStatus === SERVER_ERROR) &&
+      { (authStatus === constants.LOGIN_FAILURE || authStatus === constants.SERVER_ERROR) &&
         <Box className="login-error">
           <h1>Human</h1>
           <p>there has been a horrible mistake</p>
@@ -118,7 +117,7 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
             onClick={() => {
               setEmail('')
               setPassword('')
-              dispatch(resetAll()) // <-- reset any auth redux data
+              dispatch(resetAuth()) // <-- reset any auth redux data
             }}
           >
             IAM Button

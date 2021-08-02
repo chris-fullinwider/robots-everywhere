@@ -1,11 +1,13 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
+import counterReducer from '../features/counter/counterSlice';
+import robotsReducer from '../features/robots/robotsSlice';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
     auth: authReducer,
+    robots: robotsReducer,
+    counter: counterReducer,
   },
   devTools: true
 });

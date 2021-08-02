@@ -1,20 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { ILoginBody, login, IRegistrationBody, register, getSession, ILoginResponse, IRegistrationResponse, IGetSessionResponse, logout, ILogoutResponse } from './authAPI';
-
-export const PENDING = 'pending'
-export const IDLE = 'idle'
-export const LOGIN_SUCCESS = 'login success'
-export const LOGIN_FAILURE = 'login failed'
-export const SERVER_ERROR = 'server error'
-export const REGISTER_SUCCESS = 'register success'
-export const REGISTER_FAILURE = 'register failed'
-export const GET_SESSION_SUCCESS = 'get session success'
-export const GET_SESSION_FAILURE = 'get session failed'
-export const LOGOUT_SUCCESS = 'logout success'
-export const LOGOUT_FAILURE = 'logout failed'
-export const SOMETHING_BROKE = 'something broke'
-
+import * as constants from '../constants';
+import * as authAPI from './authAPI';
 
 export interface IAuthStateData {
   id: string | null,
@@ -26,10 +13,10 @@ export interface IAuthStateData {
 
 export interface IAuthState {
   data: IAuthStateData,
-  status: typeof IDLE | typeof PENDING | typeof LOGIN_SUCCESS| typeof LOGIN_FAILURE
-    | typeof SERVER_ERROR | typeof REGISTER_SUCCESS | typeof REGISTER_FAILURE
-    | typeof GET_SESSION_SUCCESS | typeof GET_SESSION_FAILURE | typeof LOGOUT_SUCCESS
-    | typeof LOGOUT_FAILURE | typeof SOMETHING_BROKE;
+  status: typeof constants.IDLE | typeof constants.PENDING | typeof constants.LOGIN_SUCCESS | typeof constants.LOGIN_FAILURE
+    | typeof constants.SERVER_ERROR | typeof constants.REGISTER_SUCCESS | typeof constants.REGISTER_FAILURE
+    | typeof constants.GET_SESSION_SUCCESS | typeof constants.GET_SESSION_FAILURE | typeof constants.LOGOUT_SUCCESS
+    | typeof constants.LOGOUT_FAILURE | typeof constants.SOMETHING_BROKE;
 }
 
 export const authInitialState: IAuthState = {
@@ -53,8 +40,8 @@ export const authInitialState: IAuthState = {
  */
 export const loginAsync = createAsyncThunk(
   'auth/login',
-  async (loginBody: ILoginBody) => {
-    const response: ILoginResponse = await login(loginBody);
+  async (loginBody: authAPI.ILoginBody) => {
+    const response: authAPI.ILoginResponse = await authAPI.login(loginBody);
     // The value we return becomes the `fulfilled` action payload
     return response;
   }
@@ -65,8 +52,8 @@ export const loginAsync = createAsyncThunk(
  */
 export const registerAsync = createAsyncThunk(
   'auth/register',
-  async (registrationBody: IRegistrationBody) => {
-    const response: IRegistrationResponse = await register(registrationBody);
+  async (registrationBody: authAPI.IRegistrationBody) => {
+    const response: authAPI.IRegistrationResponse = await authAPI.register(registrationBody);
     // The value we return becomes the `fulfilled` action payload
     return response;
   }
@@ -78,7 +65,7 @@ export const registerAsync = createAsyncThunk(
 export const getSessionAsync = createAsyncThunk(
   'auth/getSession',
   async (token: string) => {
-    const response: IGetSessionResponse = await getSession(token)
+    const response: authAPI.IGetSessionResponse = await authAPI.getSession(token)
     return response
   }
 )
@@ -89,7 +76,7 @@ export const getSessionAsync = createAsyncThunk(
 export const logoutAsync = createAsyncThunk(
   'auth/logout',
   async (token: string) => {
-    const response: ILogoutResponse = await logout(token)
+    const response: authAPI.ILogoutResponse = await authAPI.logout(token)
     return response
   }
 )
@@ -102,7 +89,7 @@ export const authSlice = createSlice({
   initialState: authInitialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    resetAll: (state) => {
+    resetAuth: (state) => {
       state.data = authInitialState.data
       state.status = authInitialState.status
     }
@@ -113,50 +100,50 @@ export const authSlice = createSlice({
     builder
       // ----- loginAsync
       .addCase(loginAsync.pending, (state) => {
-        state.status = PENDING;
+        state.status = constants.PENDING;
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
         if (action.payload.status >= 200) {
           const { token } = action.payload
 
-          state.status = LOGIN_SUCCESS
+          state.status = constants.LOGIN_SUCCESS
           state.data.token = token
           localStorage.setItem('token', token as string) // <-- using localstorage for token persistence
         }
         if (action.payload.status >= 400) {
           // TODO: ideally we have better reasons why the login failed
           // ie: bad email, or bad password
-          state.status = LOGIN_FAILURE
+          state.status = constants.LOGIN_FAILURE
         }
       })
       .addCase(loginAsync.rejected, (state) => {
-        state.status = SOMETHING_BROKE
+        state.status = constants.SOMETHING_BROKE
       })
       // ----- registerAsync
       .addCase(registerAsync.pending, (state) => {
-        state.status = PENDING;
+        state.status = constants.PENDING;
       })
       .addCase(registerAsync.fulfilled, (state, action) => {
         if (action.payload.status === 200 ) {
-          state.status = REGISTER_SUCCESS
+          state.status = constants.REGISTER_SUCCESS
         }
         if (action.payload.status >= 400 && action.payload.status < 500) {
           // TODO: ideally we have better reasons why the login failed
           // ie: bad email, or bad password
-          state.status = REGISTER_FAILURE
+          state.status = constants.REGISTER_FAILURE
         }
         if (action.payload.status >= 500) {
           // can't remember if a 500 response will come through from the PROMISE.fulfilled or trigger the catch
-          state.status = SERVER_ERROR
+          state.status = constants.SERVER_ERROR
         }
       })
       .addCase(registerAsync.rejected, (state) => {
         // would want to handle this a lot better, but that's detail work for later
-        state.status = SOMETHING_BROKE
+        state.status = constants.SOMETHING_BROKE
       })
       // ----- getSessionAsync
       .addCase(getSessionAsync.pending, (state) => {
-        state.status = PENDING
+        state.status = constants.PENDING
       })
       .addCase(getSessionAsync.fulfilled, (state, action) => {
         const { status } = action.payload
@@ -166,53 +153,53 @@ export const authSlice = createSlice({
           state.data.name = name
           state.data.id = id
           state.data.email = email
-          state.status = GET_SESSION_SUCCESS
+          state.status = constants.GET_SESSION_SUCCESS
         }
         if (action.payload.status >= 400 && action.payload.status < 500) {
           // TODO: ideally we have better reasons why the login failed
           // ie: bad email, or bad password
-          state.status = GET_SESSION_FAILURE
+          state.status = constants.GET_SESSION_FAILURE
         }
         if (action.payload.status >= 500) {
           // can't remember if a 500 response will come through from the PROMISE.fulfilled or trigger the catch
-          state.status = SERVER_ERROR
+          state.status = constants.SERVER_ERROR
         }
       })
       .addCase(getSessionAsync.rejected, (state) => {
         // would want to handle this a lot better, but that's detail work for later
-        state.status = SOMETHING_BROKE
+        state.status = constants.SOMETHING_BROKE
       })
       // ----- logoutAsync
       .addCase(logoutAsync.pending, (state) => {
-        state.status = PENDING
+        state.status = constants.PENDING
       })
       .addCase(logoutAsync.fulfilled, (state, action) => {
         const { status } = action.payload
 
         if (status === 200) {
           localStorage.removeItem('token') // <-- remove token from localstorage on successful logout
-          state.status = LOGOUT_SUCCESS
+          state.status = constants.LOGOUT_SUCCESS
         }
 
         if (action.payload.status >= 400 && action.payload.status < 500) {
           // TODO: ideally we have better reasons why the login failed
           // ie: bad email, or bad password
-          state.status = LOGOUT_FAILURE
+          state.status = constants.LOGOUT_FAILURE
         }
         if (action.payload.status >= 500) {
           // can't remember if a 500 response will come through from the PROMISE.fulfilled or trigger the catch
-          state.status = SERVER_ERROR
+          state.status = constants.SERVER_ERROR
         }
       })
       .addCase(logoutAsync.rejected, (state) => {
         // would want to handle this a lot better, but that's detail work for later
-        state.status = SOMETHING_BROKE
+        state.status = constants.SOMETHING_BROKE
       })
   },
 });
 
 // export actions generated by createSlice()
-export const { resetAll } = authSlice.actions
+export const { resetAuth } = authSlice.actions
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of

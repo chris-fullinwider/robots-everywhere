@@ -3,6 +3,7 @@ import React, { MouseEvent } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { useAppDispatch } from '../app/hooks';
 import {
+  resetAuth,
   logoutAsync,
 } from '../features/auth/authSlice'
 
@@ -21,18 +22,21 @@ const LogoutButton: React.FunctionComponent<ILogoutButtonProps> = (props: ILogou
     return <Redirect exact to="/login" />
   }
 
+  const logoutHandler = (evt: MouseEvent) => {
+    evt.preventDefault()
+    if (token) {
+      dispatch(resetAuth())
+      dispatch(logoutAsync(localStorage.getItem('token') as string))
+    }
+  }
+
   return (
     <>
       {type === LINK &&
         <Link
           className="logout-link"
           to="javascript:void(0)"
-          onClick={(evt: MouseEvent) => {
-            evt.preventDefault()
-            if (token) {
-              dispatch(logoutAsync(localStorage.getItem('token') as string))
-            }
-          }}
+          onClick={logoutHandler}
         >
           Log out
         </Link>
@@ -41,11 +45,7 @@ const LogoutButton: React.FunctionComponent<ILogoutButtonProps> = (props: ILogou
         <Button
           className="logout-button"
           variant="text"
-          onClick={() => {
-            if (token) {
-              dispatch(logoutAsync(localStorage.getItem('token') as string))
-            }
-          }}
+          onClick={logoutHandler}
         >
           Log out
         </Button>

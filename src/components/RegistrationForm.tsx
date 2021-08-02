@@ -5,16 +5,11 @@ import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import logo from '../brand_logo.svg';
 import {
-  resetAll,
+  resetAuth,
   registerAsync,
   selectAuthStatus,
-  IDLE,
-  PENDING,
-  SERVER_ERROR,
-  REGISTER_SUCCESS,
-  REGISTER_FAILURE,
-  SOMETHING_BROKE,
 } from '../features/auth/authSlice';
+import * as constants from '../features/constants';
 
 import './RegistrationForm.scss'
 
@@ -29,8 +24,8 @@ interface IRegistrationProps {
  */
 const shouldShowRegistrationForm = (authStatus: string) => {
   return (
-    authStatus === IDLE
-    || authStatus === PENDING
+    authStatus === constants.IDLE
+    || authStatus === constants.PENDING
   )
 }
 
@@ -41,9 +36,9 @@ const shouldShowRegistrationForm = (authStatus: string) => {
  */
 const shouldShowErrorMessage = (authStatus: string) => {
   return (
-    authStatus === SERVER_ERROR
-    || authStatus === REGISTER_FAILURE
-    || authStatus === SOMETHING_BROKE
+    authStatus === constants.SERVER_ERROR
+    || authStatus === constants.REGISTER_FAILURE
+    || authStatus === constants.SOMETHING_BROKE
   )
 }
 
@@ -98,7 +93,7 @@ const RegistrationForm: React.FunctionComponent<IRegistrationProps> = (props: IR
               className="form-button"
               variant="contained"
               color="primary"
-              disabled={authStatus === PENDING}
+              disabled={authStatus === constants.PENDING}
               onClick={() => {
                 dispatch(registerAsync({ email, name, password }))
               }}
@@ -119,7 +114,7 @@ const RegistrationForm: React.FunctionComponent<IRegistrationProps> = (props: IR
 
       {shouldShowErrorMessage(authStatus) &&
         <Box display="flex" flexDirection="column" className="registration-error">
-          {authStatus === SERVER_ERROR &&
+          {authStatus === constants.SERVER_ERROR &&
           <>
             <h2>Human</h2>
             <p>there is terrible news</p>
@@ -128,7 +123,7 @@ const RegistrationForm: React.FunctionComponent<IRegistrationProps> = (props: IR
             <p>please try again later</p>
           </>
           }
-          {authStatus === REGISTER_FAILURE &&
+          {authStatus === constants.REGISTER_FAILURE &&
           <>
             <h2>Human</h2>
             <p>you have provided faulty information</p>
@@ -141,7 +136,7 @@ const RegistrationForm: React.FunctionComponent<IRegistrationProps> = (props: IR
                 setName('')
                 setEmail('')
                 setPassword('')
-                dispatch(resetAll()) // <-- reset any auth redux data
+                dispatch(resetAuth()) // <-- reset any auth redux data
               }}
             >
               IAM Button
@@ -151,7 +146,7 @@ const RegistrationForm: React.FunctionComponent<IRegistrationProps> = (props: IR
         </Box>
       }
 
-      {authStatus === REGISTER_SUCCESS &&
+      {authStatus === constants.REGISTER_SUCCESS &&
       <Box display="flex" flexDirection="column" className="registration-error">
         <h2>Human</h2>
         <p>you have joined us</p>
@@ -162,7 +157,7 @@ const RegistrationForm: React.FunctionComponent<IRegistrationProps> = (props: IR
           variant="outlined"
           color="primary"
           onClick={() => {
-            dispatch(resetAll())
+            dispatch(resetAuth())
             setIsLoginForm(true)
           }}
         >
