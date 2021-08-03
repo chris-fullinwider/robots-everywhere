@@ -26,6 +26,8 @@ const shouldShowLoginForm = (authStatus: string | null) => {
     || authStatus === constants.PENDING
     || authStatus === constants.REGISTER_SUCCESS
     || authStatus === constants.LOGOUT_SUCCESS
+    || authStatus === constants.LOGGING_IN
+    || authStatus === constants.LOGGING_OUT
   )
 }
 
@@ -54,6 +56,8 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
 
   return (
     <>
+      {/* {authStats === constants.LOGGING_IN &&
+      } */}
       {redirectToRobots &&
         <Redirect exact to={ROBOTS_PATH} />
       }
@@ -101,10 +105,15 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
           </Box>
         </form>
       }
-      { authStatus === constants.LOGIN_SUCCESS &&
+
+      {authStatus === constants.LOGIN_SUCCESS &&
         <h1>{'Login Successful: initiating human transfer protocol'}</h1> 
       }
-      { (authStatus === constants.LOGIN_FAILURE || authStatus === constants.SERVER_ERROR || authStatus === constants.SOMETHING_BROKE) &&
+
+      {(authStatus === constants.LOGIN_FAILURE
+        || authStatus === constants.SERVER_ERROR
+        || authStatus === constants.SOMETHING_BROKE
+        ) &&
         <Box className="login-error">
           <h1>Human</h1>
           <p>there has been a horrible mistake</p>

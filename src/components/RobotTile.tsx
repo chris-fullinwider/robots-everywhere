@@ -23,7 +23,6 @@ interface IRobotTileProps extends RouteComponentProps {
 const RobotTile: React.FunctionComponent<IRobotTileProps> = (props: IRobotTileProps) => {
   const { location, robot, create } = props
   const { url, name, id } = robot
-  const [dropzoneKey, setDropzoneKey] = useState(0) // <-- allows us to clear dropzone on create success / clear
   const [createRobotFile, setCreateRobotFile] = useState<File | undefined>()
   const [createRobotName, setCreateRobotName] = useState('')
 
@@ -73,39 +72,48 @@ const RobotTile: React.FunctionComponent<IRobotTileProps> = (props: IRobotTilePr
     >
     {!create &&
       <>
-        <h3>{name}</h3>
-        <img
-          src={url}
-          alt={name}
-          className="robot-tile-image"
-        />
-        {isAdmin === true && location.pathname === ROBOTS_PATH && (
-          <Button
-            className="delete-button"
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              const userConfirm = confirm(`Shall we decomission ${name}?`);
-              if (userConfirm) {
-                dispatch(deleteRobotAsync({ token, robotId: id }))
-              }
-            }}
-          >
-            Delete
-          </Button>
-        )}
-        {!isAdmin === true && location.pathname === ROBOTS_PATH && (
-          <VoteButton robotId={id} />
-        )}
-        {location.pathname === RESULTS_PATH && (
-          <VoteResult total={votesByRobot[robot.id]}/>
-        )}
+        <div className="tile-header">
+          <h3>{name}</h3>
+        </div>
+        <div className="tile-body">
+          <img
+            src={url}
+            alt={name}
+            className="robot-tile-image"
+          />
+        </div>
+        <div className="tile-footer">
+          {isAdmin === true && location.pathname === ROBOTS_PATH && (
+            <Button
+              className="delete-button"
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                const userConfirm = confirm(`Shall we decomission ${name}?`);
+                if (userConfirm) {
+                  dispatch(deleteRobotAsync({ token, robotId: id }))
+                }
+              }}
+            >
+              Delete
+            </Button>
+          )}
+          {!isAdmin === true && location.pathname === ROBOTS_PATH && (
+            <VoteButton className="vote-button" robotId={id} />
+          )}
+          {location.pathname === RESULTS_PATH && (
+            <VoteResult className="vote-result" total={votesByRobot[robot.id]}/>
+          )}
+        </div>
       </>
     }
     {create &&
       <>
-        <h3>Add Robot</h3>
+        <div className="tile-header">
+          <h3>Add Robot</h3>
+        </div>
         <form onSubmit={handleSubmit}>
+        <div className="tile-body">
           <TextField
             className="create-robot-name-input"
             value={createRobotName}
@@ -125,25 +133,24 @@ const RobotTile: React.FunctionComponent<IRobotTileProps> = (props: IRobotTilePr
               }
             }}
           />
-          <Box className="admin-button-group">
-            <Button
-              className="create-robot-clear-button"
-              onClick={() => {
-                resetCreate()
-              }}
-            >
-              Clear
-            </Button>
-            <Button
-              className="create-robot-add-button"
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={shouldDisableCreateButton(robotsStatus)}
-            >
-              Add Robot
-            </Button>
-          </Box>
+        </div>
+          <Button
+            className="create-robot-clear-button"
+            onClick={() => {
+              resetCreate()
+            }}
+          >
+            Clear
+          </Button>
+          <Button
+            className="create-robot-add-button"
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={shouldDisableCreateButton(robotsStatus)}
+          >
+            Add Robot
+          </Button>
         </form>
       </>
     }

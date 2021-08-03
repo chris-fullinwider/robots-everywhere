@@ -9,6 +9,7 @@ import './VoteButton.scss'
 
 interface IVoteButtonProps {
   robotId: string
+  className?: string
 }
 
 const VoteButton: React.FunctionComponent<IVoteButtonProps> = (props: IVoteButtonProps) => {
@@ -28,7 +29,7 @@ const VoteButton: React.FunctionComponent<IVoteButtonProps> = (props: IVoteButto
     <>
       {robotId === userVoteRobotId &&
         <Button
-          className="vote-button"
+          className={`vote-button ${props.className}`}
           variant="outlined"
           color="primary"
           onClick={() => {

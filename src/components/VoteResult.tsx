@@ -3,11 +3,14 @@ import React from 'react'
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { selectVotesByRobot } from '../features/votes/votesSlice';
 
-const VoteResult = (props: any) => {
+interface IVoteResultProps {
+  className?: string
+  total: number
+}
 
-
+const VoteResult: React.FunctionComponent<IVoteResultProps> = (props: IVoteResultProps)  => {
   return (
-    <Box>
+    <Box className={props.className}>
       {props.total === undefined ? 0 : props.total}
     </Box>
   )

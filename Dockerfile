@@ -1,7 +1,7 @@
 FROM node:12 AS builder
 
 WORKDIR /app
-COPY basic-react-app .
+COPY . .
 RUN npm install && npm run build
 
 FROM nginx:alpine

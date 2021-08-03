@@ -16,7 +16,7 @@ export interface IAuthState {
   status: typeof constants.IDLE | typeof constants.PENDING | typeof constants.LOGIN_SUCCESS | typeof constants.LOGIN_FAILURE
     | typeof constants.SERVER_ERROR | typeof constants.REGISTER_SUCCESS | typeof constants.REGISTER_FAILURE
     | typeof constants.GET_SESSION_SUCCESS | typeof constants.GET_SESSION_FAILURE | typeof constants.LOGOUT_SUCCESS
-    | typeof constants.LOGOUT_FAILURE | typeof constants.SOMETHING_BROKE;
+    | typeof constants.LOGOUT_FAILURE | typeof constants.LOGGING_OUT | typeof constants.LOGGING_IN | typeof constants.SOMETHING_BROKE;
 }
 
 export const authInitialState: IAuthState = {
@@ -100,7 +100,7 @@ export const authSlice = createSlice({
     builder
       // ----- loginAsync
       .addCase(loginAsync.pending, (state) => {
-        state.status = constants.PENDING;
+        state.status = constants.LOGGING_IN;
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
         if (action.payload.status >= 200) {
@@ -172,7 +172,7 @@ export const authSlice = createSlice({
       })
       // ----- logoutAsync
       .addCase(logoutAsync.pending, (state) => {
-        state.status = constants.PENDING
+        state.status = constants.LOGGING_OUT
       })
       .addCase(logoutAsync.fulfilled, (state, action) => {
         const { status } = action.payload

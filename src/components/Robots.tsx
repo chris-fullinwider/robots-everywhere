@@ -3,20 +3,19 @@ import { Redirect } from 'react-router-dom';
 import { LOGIN_PATH } from '../App';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as authSlice from '../features/auth/authSlice';
-import { getRobotsAsync, selectRobotsStatus } from '../features/robots/robotsSlice'
-import { GET_SESSION_FAILURE, LOGOUT_SUCCESS, PENDING } from '../features/constants';
+import { getRobotsAsync } from '../features/robots/robotsSlice'
+import { GET_SESSION_FAILURE, LOGGING_OUT, LOGOUT_SUCCESS } from '../features/constants';
 import { Box } from '@material-ui/core';
+import robotLoader from '../robot-icon.svg'
 
 import './Robots.scss'
 import RobotTileContainer from './RobotTileContainer';
-import { IGetSessionResponse } from '../features/auth/authAPI';
 import { getUserVoteAsync, getVotesByRobotAsync } from '../features/votes/votesSlice';
 
 const Robots: React.FunctionComponent<any> = () => {
   const token = localStorage.getItem('token') as string;
   const dispatch = useAppDispatch();
   const authStatus = useAppSelector(authSlice.selectAuthStatus)
-  const robotsStatus = useAppSelector(selectRobotsStatus)
   const authData = useAppSelector(authSlice.selectAuthData)
 
   useEffect(() => {
@@ -34,12 +33,20 @@ const Robots: React.FunctionComponent<any> = () => {
     }
   }, [])
 
-  if (authStatus === GET_SESSION_FAILURE) {
+  if (authStatus === GET_SESSION_FAILURE || authStatus === LOGGING_OUT) {
     return <Redirect exact to={LOGIN_PATH} />
   }
 
-  if (authStatus === PENDING) {
-    return <div className='robots'>LOADING</div>
+  if (authStatus === LOGGING_OUT) {
+    return <Redirect exact to={LOGIN_PATH} />
+  }
+
+  if (!authData.name || !token) {
+    return (
+      <div className="loader">
+        <img src={robotLoader} alt="loader" />
+      </div>
+    )
   }
 
   return (

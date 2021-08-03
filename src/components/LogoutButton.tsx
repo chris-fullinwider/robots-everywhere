@@ -24,9 +24,13 @@ const LogoutButton: React.FunctionComponent<ILogoutButtonProps> = (props: ILogou
 
   const logoutHandler = (evt: MouseEvent) => {
     evt.preventDefault()
-    if (token) {
+    const userConfirm = confirm('Human, do you wish to proceed?')
+    if (token && userConfirm) {
       dispatch(resetAuth())
       dispatch(logoutAsync(localStorage.getItem('token') as string))
+    } else {
+      // if i had time i would give em a pop up 'splaining what went wrong
+      alert('Logout Failed, now you must stay here... forever')
     }
   }
 

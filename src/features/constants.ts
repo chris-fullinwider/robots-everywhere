@@ -5,6 +5,8 @@ export const SERVER_ERROR = 'server error'
 export const SOMETHING_BROKE = 'something broke'
 
 // auth statuses
+export const LOGGING_OUT = 'logging out'
+export const LOGGING_IN = 'logging in'
 export const LOGIN_SUCCESS = 'login success'
 export const LOGIN_FAILURE = 'login failed'
 export const REGISTER_SUCCESS = 'register success'
