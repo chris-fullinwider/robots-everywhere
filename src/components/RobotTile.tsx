@@ -49,7 +49,7 @@ const RobotTile: React.FunctionComponent<IRobotTileProps> = (props: IRobotTilePr
    * reset the create tile's state
    */
   const resetCreate = () => {
-    setDropzoneKey(dropzoneKey + 1)
+    // setDropzoneKey(dropzoneKey + 1)
     setCreateRobotName('')
     setCreateRobotFile(undefined)
   }
@@ -64,7 +64,7 @@ const RobotTile: React.FunctionComponent<IRobotTileProps> = (props: IRobotTilePr
 
   // TODO: should break the create tile out into it's own component, this is becoming a bit of a rat nest
   if ( robotsStatus === CREATE_ROBOT_SUCCESS && (createRobotName || createRobotFile)) {
-    resetCreate()
+    // resetCreate()
   }
 
   return (
@@ -116,7 +116,6 @@ const RobotTile: React.FunctionComponent<IRobotTileProps> = (props: IRobotTilePr
             onChange={(evt) => setCreateRobotName(evt.target.value)}
           ></TextField>
           <DropzoneArea
-            key={dropzoneKey}
             filesLimit={1}
             onChange={(files: File[]) => {
               if (files && files.length > 0) {
