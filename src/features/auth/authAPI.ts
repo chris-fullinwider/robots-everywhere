@@ -64,7 +64,6 @@ export const getSession = async (token: string): Promise<IGetSessionResponse> =>
       data: userInfo,
     }
   } catch (error: any) {
-    console.log('ERROR: ', error)
     throw new Error(error)
   }
 }

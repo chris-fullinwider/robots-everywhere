@@ -39,8 +39,9 @@ const App: React.FunctionComponent<IAppProps> = (props:IAppProps) => {
         <Route exact path={ROBOTS_PATH}>
           <Robots />
         </Route>
-        {/* <Route path="/results">
-        </Route> */}
+        <Route path="/results">
+          <Robots />
+        </Route>
       </Switch>
     </Provider>
   );

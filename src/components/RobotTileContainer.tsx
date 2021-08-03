@@ -1,29 +1,25 @@
+import React from 'react';
 import { Box } from '@material-ui/core';
-import React, { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { withRouter } from 'react-router-dom';
+import { ROBOTS_PATH } from '../App';
+import { useAppSelector } from '../app/hooks';
 import { IAuthStateData, selectAuthData } from '../features/auth/authSlice';
 import { IRobot } from '../features/robots/robotsAPI';
-import { getRobotsAsync, selectAllRobotsData } from '../features/robots/robotsSlice';
+import { selectAllRobotsData } from '../features/robots/robotsSlice';
 import RobotTile from './RobotTile';
+
+import './RobotTileContainer.scss'
 
 const RobotTileContainer: React.FunctionComponent<any> = () => {
 
-  const token = localStorage.getItem('token') as string
-  const dispatch = useAppDispatch();
   const allRobots = useAppSelector(selectAllRobotsData)
   const authData: IAuthStateData = useAppSelector(selectAuthData)
 
-
-  useEffect(() => {
-    dispatch(getRobotsAsync(token))
-    // dispatch getVoteEligibility
-    // - need to manage what happens when user votes
-  }, []);
-
-
   return (
-    <Box>
-      { authData.isAdmin &&
+    <Box
+      className='robot-tile-container'
+    >
+      {authData.isAdmin && location.pathname === ROBOTS_PATH &&
         <RobotTile create robot={{} as IRobot}/>
       }
       {allRobots.map(
@@ -38,4 +34,4 @@ const RobotTileContainer: React.FunctionComponent<any> = () => {
   );
 }
 
-export default RobotTileContainer;
+export default withRouter(RobotTileContainer);

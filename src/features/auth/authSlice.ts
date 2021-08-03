@@ -153,6 +153,7 @@ export const authSlice = createSlice({
           state.data.name = name
           state.data.id = id
           state.data.email = email
+          state.data.isAdmin = email === 'admin@mondorobot.com' // <-- ideally want a better way to determine this
           state.status = constants.GET_SESSION_SUCCESS
         }
         if (action.payload.status >= 400 && action.payload.status < 500) {

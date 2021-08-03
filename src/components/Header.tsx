@@ -27,8 +27,6 @@ const Header: React.FunctionComponent<IHeaderProps> = (props: IHeaderProps) => {
     setAnchorEl(undefined)
   }
 
-  console.log(anchorEl)
-
   return (
     <header className="header">
       <Box className={`${HEADER_GROUP} ${HEADER_GROUP}__left`}>

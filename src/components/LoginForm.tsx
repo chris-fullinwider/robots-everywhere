@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 
@@ -45,6 +45,8 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
   const authStatus = useAppSelector(selectAuthStatus)
   if (authStatus === constants.LOGIN_SUCCESS) {
     // delayed redirect to robots when login success is detected
+    // this causes an error that I don't have time to look into:
+    // Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function
     setTimeout(() => {
       setRedirectToRobots(true)
     }, 1000)
@@ -102,7 +104,7 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
       { authStatus === constants.LOGIN_SUCCESS &&
         <h1>{'Login Successful: initiating human transfer protocol'}</h1> 
       }
-      { (authStatus === constants.LOGIN_FAILURE || authStatus === constants.SERVER_ERROR) &&
+      { (authStatus === constants.LOGIN_FAILURE || authStatus === constants.SERVER_ERROR || authStatus === constants.SOMETHING_BROKE) &&
         <Box className="login-error">
           <h1>Human</h1>
           <p>there has been a horrible mistake</p>

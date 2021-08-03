@@ -17,3 +17,17 @@ export const LOGOUT_FAILURE = 'logout failed'
 // robot statuses
 export const GET_ROBOTS_SUCCESS = 'get robots success'
 export const GET_ROBOTS_FAILURE = 'get robots success'
+export const CREATE_ROBOT_SUCCESS = 'create robots success'
+export const CREATE_ROBOT_FAILURE = 'create robots failed'
+export const DELETE_ROBOT_SUCCESS = 'delete robots success'
+export const DELETE_ROBOT_FAILURE = 'delete robots failed'
+
+// votes statuses
+export const GET_VOTES_BY_ROBOT_SUCCESS = 'get votes by robot suceess'
+export const GET_VOTES_BY_ROBOT_FAILURE = 'get votes by robot failed'
+export const GET_USER_VOTE_SUCCESS = 'get user vote success'
+export const GET_USER_VOTE_FAILURE = 'get user vote failure'
+export const DELETE_VOTE_SUCCESS = 'delete vote success'
+export const DELETE_VOTE_FAILURE = 'delete vote failed'
+export const CREATE_VOTE_SUCCESS = 'create vote success'
+export const CREATE_VOTE_FAILURE = 'create vote failed'

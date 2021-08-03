@@ -2,14 +2,16 @@ import {  } from './../constants';
 import * as constants from '../constants';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { getRobots, IRobot, IGetRobotsResponse } from './robotsAPI';
+import { getRobots, IRobot, IGetRobotsResponse, createRobot, ICreateRobotResponse, deleteRobot, IDeleteRobotResponse } from './robotsAPI';
 
 export interface IRobotsState {
   data: {
     allRobots: IRobot[];
   },
-  status: typeof constants.IDLE | typeof constants.PENDING | typeof constants.GET_SESSION_SUCCESS | typeof constants.GET_SESSION_FAILURE | typeof constants.SOMETHING_BROKE
-    | typeof constants.SERVER_ERROR | typeof constants.GET_ROBOTS_SUCCESS | typeof constants.GET_ROBOTS_FAILURE;
+  status: typeof constants.IDLE | typeof constants.PENDING | typeof constants.GET_SESSION_SUCCESS
+    | typeof constants.GET_SESSION_FAILURE | typeof constants.SOMETHING_BROKE | typeof constants.SERVER_ERROR
+    | typeof constants.GET_ROBOTS_SUCCESS | typeof constants.GET_ROBOTS_FAILURE | typeof constants.CREATE_ROBOT_SUCCESS
+    | typeof constants.CREATE_ROBOT_FAILURE | typeof constants.DELETE_ROBOT_SUCCESS | typeof constants.DELETE_ROBOT_FAILURE;
 }
 
 export const robotsInitialState: IRobotsState = {
@@ -20,12 +22,38 @@ export const robotsInitialState: IRobotsState = {
 };
 
 /**
- * creates AsyncThunk to be used with createSlice to create getSession actions / reducers
+ * creates AsyncThunk to be used with createSlice to create getRobots actions / reducers
  */
 export const getRobotsAsync = createAsyncThunk(
-  'auth/getRobots',
+  'robots/getRobots',
   async (token: string) => {
     const response: IGetRobotsResponse = await getRobots(token)
+    return response
+  }
+)
+
+/**
+ * creates AsyncThunk to be used with createSlice to create createRobot actions / reducers
+ */
+export const createRobotAsync = createAsyncThunk(
+  'robots/createRobots',
+  async (config: { token: string, data: FormData}) => {
+    const { token, data } = config
+    const response: ICreateRobotResponse = await createRobot(token, data)
+
+    return response
+  }
+)
+
+/**
+ * creates AsyncThunk to be used with createSlice to create deleteRobot actions / reducers
+ */
+export const deleteRobotAsync = createAsyncThunk(
+  'robots/deleteRobots',
+  async (config: { token: string, robotId: string}) => {
+    const { token, robotId } = config
+    const response: IDeleteRobotResponse = await deleteRobot(token, robotId)
+
     return response
   }
 )
@@ -63,11 +91,60 @@ export const robotsSlice = createSlice({
           // ie: bad email, or bad password
           state.status = constants.GET_ROBOTS_FAILURE
         }
-        if (status > 500) {
+        if (status >= 500) {
           state.status = constants.SERVER_ERROR
         }
       })
       .addCase(getRobotsAsync.rejected, (state) => {
+        state.status = constants.SOMETHING_BROKE
+      })
+      // ----- createRobotAsync
+      .addCase(createRobotAsync.pending, (state) => {
+        state.status = constants.PENDING;
+      })
+      .addCase(createRobotAsync.fulfilled, (state, action) => {
+        const { data, status } = action.payload
+        const { robot } = data
+
+        if (status === 200) {
+          state.status = constants.CREATE_ROBOT_SUCCESS
+          // add newly created robot
+          state.data.allRobots.push(robot)
+        }
+        if (status >= 400 && status < 500) {
+          // TODO: ideally we have better reasons why the login failed
+          // ie: bad email, or bad password
+          state.status = constants.CREATE_ROBOT_FAILURE
+        }
+        if (status >= 500) {
+          state.status = constants.SERVER_ERROR
+        }
+      })
+      .addCase(createRobotAsync.rejected, (state) => {
+        state.status = constants.SOMETHING_BROKE
+      })
+      // ----- deleteRobotAsync
+      .addCase(deleteRobotAsync.pending, (state) => {
+        state.status = constants.PENDING;
+      })
+      .addCase(deleteRobotAsync.fulfilled, (state, action) => {
+        const { robotId, status } = action.payload
+
+        if (status === 200) {
+          state.status = constants.DELETE_ROBOT_SUCCESS
+          // remove the deleted robot
+          state.data.allRobots = state.data.allRobots.filter((robot: IRobot) => robot.id !== robotId)
+        }
+        if (status >= 400 && status < 500) {
+          // TODO: ideally we have better reasons why the login failed
+          // ie: bad email, or bad password
+          state.status = constants.DELETE_ROBOT_FAILURE
+        }
+        if (status >= 500) {
+          state.status = constants.SERVER_ERROR
+        }
+      })
+      .addCase(deleteRobotAsync.rejected, (state) => {
         state.status = constants.SOMETHING_BROKE
       })
   },

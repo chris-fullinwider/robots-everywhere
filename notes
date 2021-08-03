@@ -331,18 +331,19 @@ implementation plan:
       - create robot
       - 
     - create Robot home component
-      - should only get here if there is a valid token in localstorage
-      - always get session first
+      - (DONE) should only get here if there is a valid token in localstorage
+      - (DONE) always get session first
         - if get session fails, redirect to login
         - if get session succeeds, render Robots
-    - create RobotTileContainer
-    - create RobotTile
+    - (DONE) create RobotTileContainer
+    - (DONE) create RobotTile
       - two variations
         - one for read
         - one for create
 
   Votes:
-    
+    - getvoteeligibility for non-admin
+    - getvotesbyrobot
 
 
   polish
