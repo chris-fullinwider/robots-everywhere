@@ -9,9 +9,9 @@ import {
 } from "react-router-dom"
 import { store } from './app/store';
 import { Provider } from 'react-redux';
-import Login from './components/Login';
 import Header from './components/Header';
 import Robots from './components/Robots';
+import AuthContainer from './components/AuthContainer';
 
 type IAppProps = RouteComponentProps
 
@@ -34,7 +34,7 @@ const App: React.FunctionComponent<IAppProps> = (props:IAppProps) => {
         }
         </Route>
         <Route exact path={LOGIN_PATH}>
-          <Login />
+          <AuthContainer />
         </Route>
         <Route exact path={ROBOTS_PATH}>
           <Robots />

@@ -12,6 +12,11 @@ interface IVoteButtonProps {
   className?: string
 }
 
+/**
+ * It's your right!
+ * @param props IVoteButtonProps
+ * @returns a component that enables a user to vote
+ */
 const VoteButton: React.FunctionComponent<IVoteButtonProps> = (props: IVoteButtonProps) => {
   const { robotId } = props
   const token = localStorage.getItem('token') as string
@@ -21,6 +26,10 @@ const VoteButton: React.FunctionComponent<IVoteButtonProps> = (props: IVoteButto
   
   const { voteId, robotId: userVoteRobotId} = userVote
 
+  /**
+   * determine if vote button should be disabled
+   * @returns boolean
+   */
   const isVoteButtonDisabled = () => {
     return !!(voteId || votesStatus === PENDING)
   }

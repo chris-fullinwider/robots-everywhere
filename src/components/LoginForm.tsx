@@ -1,25 +1,25 @@
-// eslint-disable-next-line
-import React, { useEffect, useState } from 'react';
-
-import { useAppSelector, useAppDispatch } from '../app/hooks';
-
 import { Box, Button, TextField } from '@material-ui/core';
-import logo from '../brand_logo.svg';
-import {
-  resetAuth,
-  loginAsync,
-  selectAuthStatus,
-} from '../features/auth/authSlice';
-import * as constants from '../features/constants';
-
-import './LoginForm.scss'
+import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { ROBOTS_PATH } from '../App';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import logo from '../brand_logo.svg';
+import {
+  loginAsync, resetAuth, selectAuthStatus
+} from '../features/auth/authSlice';
+import * as constants from '../features/constants';
+import './LoginForm.scss';
+
 
 interface ILoginProps {
   setIsLoginForm: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+/**
+ * determine if login form should be shown
+ * @param authStatus string status of auth reducer
+ * @returns boolean
+ */
 const shouldShowLoginForm = (authStatus: string | null) => {
   return (
     authStatus === constants.IDLE
@@ -105,7 +105,7 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
       }
 
       {authStatus === constants.LOGIN_SUCCESS &&
-        <h1>{'Login Successful: initiating human transfer protocol'}</h1> 
+        <h1 className="login-success">{'Login Successful: initiating human transfer protocol'}</h1> 
       }
 
       {(authStatus === constants.LOGIN_FAILURE

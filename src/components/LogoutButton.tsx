@@ -13,6 +13,12 @@ export const BUTTON = 'button'
 interface ILogoutButtonProps {
   type: typeof LINK | typeof BUTTON;
 }
+
+/**
+ * creates a logout button component
+ * @param props logout button type
+ * @returns logout button (<Button> or <Link>)
+ */
 const LogoutButton: React.FunctionComponent<ILogoutButtonProps> = (props: ILogoutButtonProps) => {
   const { type } = props
   const dispatch = useAppDispatch();
@@ -22,6 +28,9 @@ const LogoutButton: React.FunctionComponent<ILogoutButtonProps> = (props: ILogou
     return <Redirect exact to="/login" />
   }
 
+  /**
+   * @param evt click event
+   */
   const logoutHandler = (evt: MouseEvent) => {
     evt.preventDefault()
     const userConfirm = confirm('Human, do you wish to proceed?')

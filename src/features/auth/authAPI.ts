@@ -135,9 +135,13 @@ export const register = async (registrationBody: IRegistrationBody): Promise<IRe
   }
 }
 
+/**
+ * logs the user out by deleting session
+ * @param token bearer token
+ * @returns { status }
+ */
 export const logout = async (token: string): Promise<ILogoutResponse> => {
   try {
-    console.log('LOGOUT: ', token)
     const logoutResponse = await fetch("https://mondo-robot-art-api.herokuapp.com/auth/session", {
       headers: {
         Accept: "application/json",

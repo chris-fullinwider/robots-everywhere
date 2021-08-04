@@ -1,3 +1,5 @@
+// I think this methodology for status might have been a mistake, but it works well enough at this scale
+
 // general statuses
 export const IDLE = 'idle'
 export const PENDING = 'pending'

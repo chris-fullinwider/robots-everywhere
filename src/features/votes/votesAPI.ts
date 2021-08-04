@@ -143,8 +143,6 @@ export const getUserVote = async (token: string, userId: string): Promise<IGetUs
 
     let userVote: IVote = {} as IVote
     if (status === 200) {
-      console.log('ALL VOTES: ', allVotes)
-      console.log('USERID: ', userId)
       userVote = allVotes.find((vote: IVote) => vote.user === userId) || {} as IVote
     }
 

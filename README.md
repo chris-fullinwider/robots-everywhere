@@ -1,44 +1,101 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
-## Available Scripts
 
-In the project directory, you can run:
+# Mondo Robot Engineering Skills Test Submission
+- Thanks for reviewing my interview project, I hope there's not too much spaghetti :)
+- Deployed Application: https://secret-hamlet-00392.herokuapp.com/
 
-### `yarn start`
+## Technologies Used
+- HTML, CSS, Typescript, React, Redux, Hooks, Redux-toolkit
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Local Development
+- **Pre-requisites:**
+  - node (recommended > 10)
 
-### `yarn test`
+- **Optional:**
+  - docker
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Folder Structure
+- all React components and stylesheets reside in ./src/components
+- everything to do with application data and updating state for that data lives in ./features/{DOMAIN}
+  - EXCEPT for the setup -- redux setup implementation is in ./src/app
 
-### `yarn build`
+### Scripts
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Setup
+- clone this repository to your machine
+- navigate to the root directory
+- run `npm install` or `yarn install`
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Development Workflow
+- from the project  root directory
+- run `npm start` or `yarn start` to initiate the dev server
+  - this will serve the application on port 3000 with Hot Module Reloading enabled
+- open a browser to `localhost:3000`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Docker Workflow
+- **Pre-requisites:**
+  - docker
 
-### `yarn eject`
+- from the project  root directory
+- run `docker build -t {DESIRED_IMAGE_NAME} .`
+- once the image is built, run:
+  - `docker run --rm -e "PORT=80" -it -p 8080:80 {DESIRED_IMAGE_NAME}`
+  - the ngninx server will receive the $PORT environment variable when building the image and inject it into Dockerfile
+  - then the Dockerfile injects $PORT via sed command on `nginx.conf` during image build
+  - the internal app is serving itself on port 80
+  - the docker container forwards that internal port to the container's port 8080
+  - the numbers are just for fun, and can be replaced with nearly any valid port value
+- open a browser to `localhost:8080`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Deployment
+**Pre-requisites:**
+- heroku CLI tools
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Process
+- create a heroku account
+- download Heroku CLI tools
+- login to heroku account via CLI
+- navigate to root directory in a terminal:
+  - `heroku create` -- generates a heroku app and responds with the identifier for that app
+  - `heroku container:push web --app {HEROKU_APP_NAME}` -- build and push docker container to heroku app container registry
+  - `heroku container:release web --app {HEROKU_APP_NAME}` -- deploys the most recent container build to the app
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Design Decisions
+- there is much that could be done to improve this codebase, however, I was mostly focused on a mostly smooth user experience and solid functionality
+- some of the UI will not fit to spec around colors and some alignment issues here and there
+  - putting the correct color theme in never got prioritized in my head, so apologies for the basic material UI colors
+  - i've simply run out of time to polish
+- unit tests were NOT implemented for this project as the time investment didn't seem worthwhile
+- material ui is awesome
+- component structure is somewhat questionable in places
+  - particularly LoginForm RegistrationForm and RobotTile -- these all do way too much and could easily be broken out into more discrete units
+- the DropzoneArea I used was a legitimate pain to work with
+  - sizing via css was somewhat tricky
+  - IT'S INTERIOR UPLOAD STATE CANNOT BE RESET MANUALLY! (without a hack that broke other stuff, so I stopped going down that route)
+- i think the status management for each slice (statuses in ./src/features/constants) is manageable for the current scale of the application, but would need to be refactored to scale up
+- i managed redux through the `createSlice` methodology and it was probably the best learning to come out of this project for me
+  - i had never seen or heard of a redux slice before, but it came baked into `create-react-app`
+    - the more i understood it, the more i liked it
+  - the last time i did redux development, we were writing out ALL of the reducers and actions by hand
+  - this methodology gives a really nice visual flow for what happens with async actions
+  - i will not be going back
+- all of the `{prefix}API` files could easily be turned into a nodejs service
+  - considering the base MondoRobot API does not exactly service this app specifically, it would make sense for a middleman API to sit between the frontend and the MondoRobot API to do all of the mapping, input validation and conversion.
+  - considering all of that functionality is nicely wrapped up into three files, I'm fine leaving them in the frontend for now
+  - again, if this was a real frontend, i would move all of the business logic, data manipulation, input validation to a pass-through/transformation API service
+  - INPUT VALIDATION!... i didn't do it
+    - yet another planned feature that had to be ruthelessly de-prioritized
+    - i guess we will have to trust the user
+- i wanted to implement nice transitions between ui states as well as toast messages that pop up when specific states occur to help the user along
+- and a final quality of life change that is needed is a better eslint implementation with husky pre-commit check and auto-lint-fix for all of the files
+- also, navigation with back / forward button causes errors
+  - doesn't break the app, though
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- i'm not sure i met the last couple bullets for the 'end user experience'
+  > • The application should immediately reflect changes when a vote is cast (UI + voting results)
+  > • For the purposes of this exercise, is not required to reflect admin changes (creating or removing robots) immediately to the end user. BONUS: It would be great to see how you would solve that problem.
+  - the ui should always be accurate for the logged in user, however, if another user votes, i do not have anything in place to dynamically update the first user's ui
+  - for both of these issues, I would lift my API files into a separate service and implement a websocket between the server and frontend to keep all of the end users synced up on votes and robots
+    - it's probably slightly more complicated than this to maintain and ensure that everybody is synced, but websockets is where i would start

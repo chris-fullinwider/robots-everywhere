@@ -1,17 +1,15 @@
 import {
-  Box, Button, TextField,
+  Box, Button, TextField
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import logo from '../brand_logo.svg';
 import {
-  resetAuth,
-  registerAsync,
-  selectAuthStatus,
+  registerAsync, resetAuth, selectAuthStatus
 } from '../features/auth/authSlice';
 import * as constants from '../features/constants';
+import './RegistrationForm.scss';
 
-import './RegistrationForm.scss'
 
 interface IRegistrationProps {
   setIsLoginForm: React.Dispatch<React.SetStateAction<boolean>>

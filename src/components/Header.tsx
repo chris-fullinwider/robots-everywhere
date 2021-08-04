@@ -5,9 +5,8 @@ import React, { MouseEvent, useState } from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { RESULTS_PATH, ROBOTS_PATH } from '../App';
 import logo from '../brand_logo.svg';
+import './Header.scss';
 import LogoutButton, { BUTTON, LINK } from './LogoutButton';
-
-import './Header.scss'
 
 const NAV_LINK = 'nav-link'
 const HEADER_GROUP = 'header-group'
@@ -16,13 +15,27 @@ const OFF = 'off'
 
 type IHeaderProps = RouteComponentProps
 
+/**
+ * Header Component
+ * @param props IHeaderProps
+ * @returns Header component for the application including nav bar
+ */
 const Header: React.FunctionComponent<IHeaderProps> = (props: IHeaderProps) => {
   const [anchorEl, setAnchorEl] = useState<Element>()
   const robotsOn = props.location.pathname === ROBOTS_PATH
   const resultsOn = props.location.pathname === RESULTS_PATH
+
+  /**
+   * handle open mobile menu
+   * @param evt click event
+   */
   const handleOpen = (evt: MouseEvent) => {
     setAnchorEl(evt.currentTarget)
   }
+
+  /**
+   * handles closing mobile menu
+   */
   const handleClose = () => {
     setAnchorEl(undefined)
   }

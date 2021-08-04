@@ -10,8 +10,11 @@ import RobotTile from './RobotTile';
 
 import './RobotTileContainer.scss'
 
+/**
+ * a component to house RobotTile's
+ * @returns a collection of RobotTile
+ */
 const RobotTileContainer: React.FunctionComponent<any> = () => {
-
   const allRobots = useAppSelector(selectAllRobotsData)
   const authData: IAuthStateData = useAppSelector(selectAuthData)
 

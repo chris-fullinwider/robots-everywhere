@@ -1,12 +1,14 @@
 // eslint-disable-next-line
-import React, { useState } from 'react';
-
 import { Box } from '@material-ui/core';
-import RegistrationForm from './RegistrationForm';
-import LoginForm from './LoginForm';
+import React, { useState } from 'react';
 import './AuthContainer.scss';
+import LoginForm from './LoginForm';
+import RegistrationForm from './RegistrationForm';
 
-
+/**
+ * contains the login and registration forms
+ * @returns a container for all initial authing things
+ */
 const AuthContainer: React.FunctionComponent = () => {
   const [ isLoginForm, setIsLoginForm ] = useState(true)
 

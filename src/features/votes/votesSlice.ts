@@ -198,7 +198,6 @@ export const { resetVotes } = votesSlice.actions
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectVotesByRobot = (state: RootState): { [key: string]: number } => state.votes.data.votesByRobot
 export const selectVotesStatus = (state: RootState): string => state.votes.status
 export const selectUserVote = (state: RootState): IUserVote => state.votes.data.userVote

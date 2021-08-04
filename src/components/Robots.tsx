@@ -1,17 +1,20 @@
+import { Box } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { LOGIN_PATH } from '../App';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import * as authSlice from '../features/auth/authSlice';
-import { getRobotsAsync } from '../features/robots/robotsSlice'
-import { selectVotesStatus } from '../features/votes/votesSlice'
-import { CREATE_VOTE_SUCCESS, DELETE_VOTE_SUCCESS, GET_SESSION_FAILURE, LOGGING_OUT, LOGOUT_SUCCESS } from '../features/constants';
-import { Box } from '@material-ui/core';
-
-import './Robots.scss'
+import { CREATE_VOTE_SUCCESS, DELETE_VOTE_SUCCESS, LOGOUT_SUCCESS } from '../features/constants';
+import { getRobotsAsync } from '../features/robots/robotsSlice';
+import { getUserVoteAsync, getVotesByRobotAsync, selectVotesStatus } from '../features/votes/votesSlice';
+import './Robots.scss';
 import RobotTileContainer from './RobotTileContainer';
-import { getUserVoteAsync, getVotesByRobotAsync } from '../features/votes/votesSlice';
 
+
+/**
+ * component that handles rendering all of the robots and associated functionality
+ * @returns the ROBOTS!!!
+ */
 const Robots: React.FunctionComponent<any> = () => {
   const [ready, setReady] = useState(false)
   const token = localStorage.getItem('token') as string;
