@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 
 # Mondo Robot Engineering Skills Test Submission
-- Thanks for reviewing my interview project, I hope there's not too much spaghetti :)
+- Thanks for reviewing my skills test project, I hope there's not too much spaghetti :)
 - Deployed Application: https://secret-hamlet-00392.herokuapp.com/
 
 ## Technologies Used
