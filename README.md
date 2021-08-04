@@ -83,9 +83,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
   - considering the base MondoRobot API does not exactly service this app specifically, it would make sense for a middleman API to sit between the frontend and the MondoRobot API to do all of the mapping, input validation and conversion.
   - considering all of that functionality is nicely wrapped up into three files, I'm fine leaving them in the frontend for now
   - again, if this was a real frontend, i would move all of the business logic, data manipulation, input validation to a pass-through/transformation API service
-  - INPUT VALIDATION!... i didn't do it
-    - yet another planned feature that had to be ruthelessly de-prioritized
-    - i guess we will have to trust the user
+- INPUT VALIDATION!... i didn't do it
+  - yet another planned feature that had to be ruthelessly de-prioritized
+  - i guess we will have to trust the user
 - i wanted to implement nice transitions between ui states as well as toast messages that pop up when specific states occur to help the user along
 - and a final quality of life change that is needed is a better eslint implementation with husky pre-commit check and auto-lint-fix for all of the files
 - also, navigation with back / forward button causes errors
