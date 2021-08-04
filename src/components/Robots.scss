@@ -1,19 +1,31 @@
 .robots {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 0 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .heading-container {
+    text-align: left;
+    width: 1240px;
+    margin: 0 auto
+  }
+
+  .loading {
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 50px;
+  }
 }
 
-@media only screen and (max-width: 1220px) {
-  .robot-tile-container {
-    max-width: 820px;
+@media only screen and (max-width: 1340px) {
+  .robots {
     padding: 0 20px;
   }
 }
 
 @media only screen and (max-width: 866px) {
-  .robot-tile-container {
-    max-width: 550px;
+  .robots {
     padding: 0 10px;
   }
 }

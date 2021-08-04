@@ -2,16 +2,21 @@
   display: grid;
   grid-template-rows: repeat(3, 530px);
   grid-template-columns: repeat(3, 397px);
+  grid-auto-rows: 530px;
   grid-gap: 25px;
   margin: 0 auto;
 }
 
 
-@media only screen and (max-width: 1220px) {
+@media only screen and (max-width: 1340px) {
   .robot-tile-container {
     grid-template-rows: repeat(2, 530px);
     grid-template-columns: repeat(2, 397px);
     padding: 0 20px;
+  }
+
+  .heading-container {
+    width: auto;
   }
 }
 
@@ -19,7 +24,6 @@
   .robot-tile-container {
     grid-template-rows: repeat(1, 530px);
     grid-template-columns: repeat(1, 397px);
-    grid-auto-rows: 530px;
     padding: 0 10px;
     justify-content: center;
   }

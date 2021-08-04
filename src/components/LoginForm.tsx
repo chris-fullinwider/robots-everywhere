@@ -27,7 +27,6 @@ const shouldShowLoginForm = (authStatus: string | null) => {
     || authStatus === constants.REGISTER_SUCCESS
     || authStatus === constants.LOGOUT_SUCCESS
     || authStatus === constants.LOGGING_IN
-    || authStatus === constants.LOGGING_OUT
   )
 }
 
@@ -56,8 +55,6 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
 
   return (
     <>
-      {/* {authStats === constants.LOGGING_IN &&
-      } */}
       {redirectToRobots &&
         <Redirect exact to={ROBOTS_PATH} />
       }
@@ -81,6 +78,7 @@ const LoginForm: React.FunctionComponent<ILoginProps> = (props: ILoginProps) => 
               label="Password"
               variant="outlined"
               color="primary"
+              type="password"
               onChange={(evt) => setPassword(evt.target.value)}
             />
             <Button

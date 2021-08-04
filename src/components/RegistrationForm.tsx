@@ -26,6 +26,7 @@ const shouldShowRegistrationForm = (authStatus: string) => {
   return (
     authStatus === constants.IDLE
     || authStatus === constants.PENDING
+    || authStatus === constants.LOGOUT_SUCCESS
   )
 }
 
@@ -87,6 +88,7 @@ const RegistrationForm: React.FunctionComponent<IRegistrationProps> = (props: IR
               label="Password"
               variant="outlined"
               color="primary"
+              type="password"
               onChange={(evt) => setPassword(evt.target.value)}
             />
             <Button
