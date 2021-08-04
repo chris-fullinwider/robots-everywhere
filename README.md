@@ -21,8 +21,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - everything to do with application data and updating state for that data lives in ./features/{DOMAIN}
   - EXCEPT for the setup -- redux setup implementation is in ./src/app
 
-### Scripts
-
 ### Setup
 - clone this repository to your machine
 - navigate to the root directory
